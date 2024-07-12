@@ -1,0 +1,16 @@
+spring:
+  application:
+    name: examples
+  datasource:
+    url: jdbc:mysql://localhost:3306/tienda_de_ropa
+    driverClassName: com.mysql.jdbc.Driver
+    username: root
+    password: Lpk9m1iw
+  jpa:
+    hibernate:
+      ddl-auto: validate  # Puedes cambiar a "validate" para evitar la modificación del esquema de la BD.
+    show-sql: true
+    properties:
+      hibernate:
+        naming:
+          physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
