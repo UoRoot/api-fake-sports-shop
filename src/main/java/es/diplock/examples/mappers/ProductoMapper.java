@@ -3,10 +3,12 @@ package es.diplock.examples.mappers;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import es.diplock.examples.dtos.ColorDTO;
 import es.diplock.examples.dtos.ProductoDTO;
+import es.diplock.examples.entities.Categoria;
 import es.diplock.examples.entities.Color;
 import es.diplock.examples.entities.Producto;
+import es.diplock.examples.entities.Talla;
+import es.diplock.examples.enums.GeneroEnum;
 
 public class ProductoMapper {
 
@@ -15,9 +17,13 @@ public class ProductoMapper {
             return null;
         }
 
-        // Set<ColorDTO> colores = producto.getColores().stream()
-        // .map(ColorMapper::toDto)
-        // .collect(Collectors.toSet());
+        Set<Integer> colores = producto.getColores().stream()
+                .map(color -> color.getId())
+                .collect(Collectors.toSet());
+
+        Set<Integer> tallas = producto.getTallas().stream()
+                .map(talla -> talla.getId())
+                .collect(Collectors.toSet());
 
         return new ProductoDTO(
                 producto.getId(),
@@ -25,12 +31,14 @@ public class ProductoMapper {
                 producto.getDescripcion(),
                 producto.getPrecio(),
                 producto.getCantidadStock(),
-                producto.getTalla(),
-                null,
-                producto.getCategoria());
+                producto.getGenero().getDescripcion(),
+                tallas,
+                colores,
+                producto.getCategoria().getId());
     }
 
-    public static Producto toEntity(ProductoDTO productoDTO) {
+    public static Producto toEntity(ProductoDTO productoDTO, Categoria categoria, Set<Color> colores,
+            Set<Talla> tallas) {
         if (productoDTO == null) {
             return null;
         }
@@ -41,14 +49,10 @@ public class ProductoMapper {
         producto.setDescripcion(productoDTO.descripcion());
         producto.setPrecio(productoDTO.precio());
         producto.setCantidadStock(productoDTO.cantidadStock());
-        producto.setTalla(productoDTO.talla());
-        producto.setCategoria(productoDTO.categoria());
-
-        Set<Color> colores = productoDTO.colores().stream()
-                .map(ColorMapper::toEntity)
-                .collect(Collectors.toSet());
-
+        producto.setGenero(GeneroEnum.getEnum(productoDTO.genero()));
+        producto.setTallas(tallas);
         producto.setColores(colores);
+        producto.setCategoria(categoria);
 
         return producto;
     }

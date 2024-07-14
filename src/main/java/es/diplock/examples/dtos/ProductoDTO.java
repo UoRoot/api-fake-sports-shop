@@ -9,7 +9,8 @@ public record ProductoDTO(
         String descripcion,
         BigDecimal precio,
         Integer cantidadStock,
-        String talla,
-        Set<ColorDTO> colores,
-        String categoria) {
+        String genero,
+        Set<Integer> tallas,
+        Set<Integer> colores,
+        Integer categoria) {
 }

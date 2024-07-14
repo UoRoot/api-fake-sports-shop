@@ -11,6 +11,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -25,16 +26,19 @@ import lombok.Setter;
 @Entity
 @Table(name = "ventas")
 public class Venta extends Base {
+    @NotNull
     @ManyToOne
     @JoinColumn(name = "cliente_id", nullable = false)
     private Cliente cliente;
-    
+
+    @NotNull
     @Column(name = "fecha_venta", nullable = false)
     private LocalDateTime fechaVenta;
-    
+
+    @NotNull
     @Column(name = "total_venta", nullable = false, precision = 10, scale = 2)
     private BigDecimal totalVenta;
-    
+
     @OneToMany(mappedBy = "venta", fetch = FetchType.LAZY)
     private Set<DetalleVenta> detallesVenta;
 }

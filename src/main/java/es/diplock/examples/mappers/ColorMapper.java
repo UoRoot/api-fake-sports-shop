@@ -9,7 +9,7 @@ public class ColorMapper {
         if (color == null) {
             return null;
         }
-        return new ColorDTO(color.getId(), color.getColor());
+        return new ColorDTO(color.getId(), color.getNombre());
     }
 
     public static Color toEntity(ColorDTO colorDTO) {
@@ -18,7 +18,7 @@ public class ColorMapper {
         }
         Color color = new Color();
         color.setId(colorDTO.id());
-        color.setColor(colorDTO.color());
+        color.setNombre(colorDTO.color());
         return color;
     }
 }

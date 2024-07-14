@@ -8,7 +8,7 @@ spring:
     password: Lpk9m1iw
   jpa:
     hibernate:
-      ddl-auto: validate  # Puedes cambiar a "validate" para evitar la modificación del esquema de la BD.
+      ddl-auto: validate
     show-sql: true
     properties:
       hibernate:
