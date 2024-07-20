@@ -3,7 +3,8 @@ package es.diplock.examples.mappers;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import es.diplock.examples.dtos.ProductoDTO;
+import es.diplock.examples.dtos.producto.CreateProductoDTO;
+import es.diplock.examples.dtos.producto.ProductoDTO;
 import es.diplock.examples.entities.Categoria;
 import es.diplock.examples.entities.Color;
 import es.diplock.examples.entities.Producto;
@@ -37,23 +38,23 @@ public class ProductoMapper {
                 producto.getCategoria().getId());
     }
 
-    public static Producto toEntity(ProductoDTO productoDTO, Categoria categoria, Set<Color> colores,
+    public static Producto toEntity(CreateProductoDTO productoDTO, Categoria categoria, Set<Color> colores,
             Set<Talla> tallas) {
         if (productoDTO == null) {
             return null;
         }
 
         Producto producto = new Producto();
-        producto.setId(productoDTO.id());
-        producto.setNombre(productoDTO.nombre());
-        producto.setDescripcion(productoDTO.descripcion());
-        producto.setPrecio(productoDTO.precio());
-        producto.setCantidadStock(productoDTO.cantidadStock());
-        producto.setGenero(GeneroEnum.getEnum(productoDTO.genero()));
+        producto.setNombre(productoDTO.getNombre());
+        producto.setDescripcion(productoDTO.getDescripcion());
+        producto.setPrecio(productoDTO.getPrecio());
+        producto.setCantidadStock(productoDTO.getCantidadStock());
+        producto.setGenero(GeneroEnum.getEnum(productoDTO.getGenero()));
         producto.setTallas(tallas);
         producto.setColores(colores);
         producto.setCategoria(categoria);
 
         return producto;
     }
+
 }

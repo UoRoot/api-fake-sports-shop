@@ -3,7 +3,8 @@ package es.diplock.examples.controllers;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import es.diplock.examples.dtos.ProductoDTO;
+import es.diplock.examples.dtos.producto.CreateProductoDTO;
+import es.diplock.examples.dtos.producto.ProductoDTO;
 import es.diplock.examples.service.Producto.ProductoService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -26,7 +27,7 @@ public class ProductoController {
 
     @GetMapping
     public ResponseEntity<List<ProductoDTO>> getProducts() {
-        List<ProductoDTO> productoDTOs = productoService.findAll();
+        List<ProductoDTO> productoDTOs = productoService.findAllProducts();
         if (productoDTOs.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
@@ -35,7 +36,7 @@ public class ProductoController {
 
     @GetMapping("/{id}")
     public ResponseEntity<ProductoDTO> getProductById(@PathVariable Long id) {
-        ProductoDTO productoDTO = productoService.findById(id);
+        ProductoDTO productoDTO = productoService.findProductById(id);
         if (productoDTO == null) {
             return ResponseEntity.notFound().build();
         }
@@ -43,8 +44,8 @@ public class ProductoController {
     }
 
     @PostMapping
-    public ResponseEntity<ProductoDTO> createProduct(@Valid @RequestBody ProductoDTO productoDTO) {
-        ProductoDTO savedProducto = productoService.save(productoDTO);
+    public ResponseEntity<ProductoDTO> createProduct(@Valid @RequestBody CreateProductoDTO newProductoDTO) {
+        ProductoDTO savedProducto = productoService.saveProduct(newProductoDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedProducto);
     }
 }

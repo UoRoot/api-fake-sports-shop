@@ -13,9 +13,8 @@ POST http://localhost:8080/api/v1/productos
 content-type: application/json
 
 {
-  "id": null,
-  "nombre": "Zapatilla HANDBALL SPEZIAL",
-  "descripcion": "La zapatilla favorita de los profesionales del balonmano en 1979 triunfa hoy en las calles gracias a su estilo atemporal. Esta versión presenta una parte superior de nobuk muy suave al tacto.",
+  "nombre": "Zapatillas Spezial"
+  "descripcion": "La zapatilla favorita de los profesionales del balonmano en 1979.",
   "precio": 110,
   "cantidadStock": 100,
   "genero": "Masculino",

@@ -9,20 +9,22 @@ import jakarta.persistence.Id;
 import jakarta.persistence.MappedSuperclass;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
-@AllArgsConstructor
+@RequiredArgsConstructor
 @NoArgsConstructor
 @MappedSuperclass
 public class Base {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @NonNull
   private Long id;
 
   @Column(name = "created_date")

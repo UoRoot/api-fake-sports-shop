@@ -1,7 +1,5 @@
 package es.diplock.examples.entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -30,7 +28,6 @@ public class Color {
 
     @NotBlank(message = "campo requerido")
     @Size(min = 3, max = 50, message = "nombre del color debe tener entre 3 a 50 caracteres")
-
     @Column(name = "nombre", nullable = false, length = 50)
     private String nombre;
 }

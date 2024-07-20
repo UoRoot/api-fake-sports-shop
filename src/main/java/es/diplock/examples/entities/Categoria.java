@@ -12,9 +12,8 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -32,12 +31,16 @@ public class Categoria {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @NotBlank(message = "campo requerido")
-    @Size(min = 3, max = 50, message = "nombre de la categoria debe tener entre 3 a 50 caracteres")
     @Column(name = "nombre", nullable = false, length = 50)
     private String nombre;
 
     @OneToMany(mappedBy = "categoria", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Producto> productos;
+
+    @Builder
+    public Categoria(Integer id, String nombre) {
+        this.id = id;
+        this.nombre = nombre;
+    }
 
 }

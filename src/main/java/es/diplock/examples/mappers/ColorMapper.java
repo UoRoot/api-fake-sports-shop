@@ -18,7 +18,7 @@ public class ColorMapper {
         }
         Color color = new Color();
         color.setId(colorDTO.id());
-        color.setNombre(colorDTO.color());
+        color.setNombre(colorDTO.nombre());
         return color;
     }
 }
