@@ -23,24 +23,23 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "categorias")
-@AttributeOverride(name = "id", column = @Column(name = "id"))
-public class Categoria {
+@Table(name = "categories")
+public class Category {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(name = "nombre", nullable = false, length = 50)
-    private String nombre;
+    @Column(name = "name", nullable = false, length = 50)
+    private String name;
 
-    @OneToMany(mappedBy = "categoria", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<Producto> productos;
+    @OneToMany(mappedBy = "category", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<Product> products;
 
     @Builder
-    public Categoria(Integer id, String nombre) {
+    public Category(Integer id, String name) {
         this.id = id;
-        this.nombre = nombre;
+        this.name = name;
     }
 
 }

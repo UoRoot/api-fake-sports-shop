@@ -20,15 +20,15 @@ import lombok.Setter;
 @NoArgsConstructor
 @Builder
 @Entity
-@Table(name = "tallas")
-public class Talla {
+@Table(name = "sizes")
+public class SizeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @NotBlank(message = "campo requerido")
-    @Size(min = 3, max = 50, message = "La talla debe tener entre 3 a 10 caracteres")
-    @Column(name = "talla", nullable = false, length = 10)
-    private String talla;
+    @NotBlank(message = "required field")
+    @Size(min = 3, max = 50, message = "The size must be between 3 to 10 characters")
+    @Column(name = "size", nullable = false, length = 10)
+    private String size;
 
 }

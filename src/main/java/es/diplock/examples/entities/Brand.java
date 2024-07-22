@@ -1,10 +1,15 @@
 package es.diplock.examples.entities;
 
+import java.util.List;
+
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,17 +21,24 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
 @Entity
-@Table(name = "colors")
-public class Color {
+@Table(name = "brands")
+public class Brand {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    // @NotBlank(message = "campo requerido")
-    // @Size(min = 3, max = 50, message = "name del color debe tener entre 3 a 50
-    // caracteres")
-    @Column(name = "name", nullable = false, length = 50)
-    private String name;
+    @Column(name = "brand", nullable = false, length = 50)
+    private String brand;
+
+    @OneToMany(mappedBy = "brand", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<Product> products;
+
+    @Builder
+    public Brand(Integer id, String brand) {
+        this.id = id;
+        this.brand = brand;
+    }
+
 }

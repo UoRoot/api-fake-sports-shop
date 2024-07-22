@@ -1,4 +1,4 @@
-package es.diplock.examples.service.Color;
+package es.diplock.examples.service.color;
 
 import java.util.List;
 import java.util.Optional;

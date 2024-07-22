@@ -2,7 +2,7 @@ spring:
   application:
     name: examples
   datasource:
-    url: jdbc:mysql://localhost:3306/tienda_de_ropa
+    url: jdbc:mysql://localhost:3306/api_fake
     driverClassName: com.mysql.jdbc.Driver
     username: root
     password: Lpk9m1iw

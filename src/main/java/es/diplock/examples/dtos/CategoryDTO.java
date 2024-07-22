@@ -1,6 +1,6 @@
 package es.diplock.examples.dtos;
 
-public record TallaDTO(
+public record CategoryDTO(
                 Integer id,
-                String talla) {
+                String name) {
 }

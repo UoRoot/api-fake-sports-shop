@@ -2,23 +2,24 @@
 GET http://localhost:8080/api/message
 
 ### GET podructos
-GET http://localhost:8080/api/v1/productos
+GET http://localhost:8080/api/v1/products
 
 ### GET podructos by Id
-GET http://localhost:8080/api/v1/productos/1
+GET http://localhost:8080/api/v1/products/1
 
 
 ### POST guardar un producto
-POST http://localhost:8080/api/v1/productos
+POST http://localhost:8080/api/v1/products
 content-type: application/json
 
 {
-  "nombre": "Zapatillas Spezial"
-  "descripcion": "La zapatilla favorita de los profesionales del balonmano en 1979.",
-  "precio": 110,
-  "cantidadStock": 100,
-  "genero": "Masculino",
-  "tallas": [3],
-  "colores": [3, 4], 
-  "categoria": 3
+  "name": "Zapatillas Spezial",
+  "description": "La zapatilla favorita de los profesionales del balonmano en 1979.",
+  "price": 110,
+  "stockQuantity": 100,
+  "gender": "Male",
+  "sizesIds": [3],
+  "colorsIds": [3, 4], 
+  "categoryId": 3,
+  "brandId": 1
 }

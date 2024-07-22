@@ -3,8 +3,8 @@ package es.diplock.examples.repositories;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import es.diplock.examples.entities.Categoria;
+import es.diplock.examples.entities.SizeEntity;
 
 @Repository
-public interface CategoriaRepository extends JpaRepository<Categoria, Integer> {
+public interface SizeRepository extends JpaRepository<SizeEntity, Integer> {
 }
