@@ -4,7 +4,6 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.web.bind.annotation.RestController;
 
-
 @RestController
 @SpringBootApplication
 public class ExamplesApplication {
@@ -14,20 +13,20 @@ public class ExamplesApplication {
 	}
 
 	// @Bean
-    // CommandLineRunner commandLineRunner(/* repository*/){
-	// 	return args -> {
-			
-	// 		// Price price = new Price();
-	// 		// price.setBasePrice(BigDecimal.valueOf(200));
-	// 		// price.setTotalTax(BigDecimal.valueOf(50));
-	// 		// price.setTotalPrice(BigDecimal.valueOf(150));
+	// CommandLineRunner commandLineRunner(/* repository*/){
+	// return args -> {
 
-	// 		// priceRepository.save(price);
+	// // Price price = new Price();
+	// // price.setBasePrice(BigDecimal.valueOf(200));
+	// // price.setTotalTax(BigDecimal.valueOf(50));
+	// // price.setTotalPrice(BigDecimal.valueOf(150));
 
-	// 		// Optional<Price> optionalPrice = priceRepository.findById(2L);
-	// 		// if  (optionalPrice.isPresent()) {
-	// 		// 	System.out.println(optionalPrice.get());
-	// 		// }
-	// 	};
+	// // priceRepository.save(price);
+
+	// // Optional<Price> optionalPrice = priceRepository.findById(2L);
+	// // if (optionalPrice.isPresent()) {
+	// // System.out.println(optionalPrice.get());
+	// // }
+	// };
 	// }
 }

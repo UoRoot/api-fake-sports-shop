@@ -2,6 +2,7 @@ package es.diplock.examples.service.product;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -45,9 +46,13 @@ public class ProductServiceImpl implements ProductService {
     }
 
     public ProductDTO findProductById(Long id) {
-        return productRepository.findById(id)
-                .map(ProductMapper::toDto)
-                .orElseThrow(() -> new ResourceNotFoundException("Product not found."));
+        Optional<Product> optional = productRepository.findById(id);
+
+        if (optional.isPresent()) {
+            return optional.map(ProductMapper::toDto).get();
+        }
+
+        return null;
     }
 
     public ProductDTO saveProduct(CreateProductDTO productDTO) {
@@ -57,15 +62,8 @@ public class ProductServiceImpl implements ProductService {
         Brand brand = brandRepository.findById(productDTO.getBrandId())
                 .orElseThrow(() -> new ResourceNotFoundException("Category not found"));
 
-        Set<Color> colors = new HashSet<>(colorRepository.findAllById(productDTO.getColorsIds()));
-        if (colors.size() != productDTO.getColorsIds().size()) {
-            throw new ResourceNotFoundException("One or more colors not found");
-        }
-
-        Set<SizeEntity> sizes = new HashSet<>(sizeRepository.findAllById(productDTO.getSizesIds()));
-        if (sizes.size() != productDTO.getSizesIds().size()) {
-            throw new ResourceNotFoundException("One or more sizes not found");
-        }
+        Set<Color> colors = getColors(productDTO.getColorsIds());
+        Set<SizeEntity> sizes = getSizes(productDTO.getSizesIds());
 
         Product product = productRepository.save(ProductMapper.toEntity(productDTO, category, brand, colors, sizes));
         return ProductMapper.toDto(product);
@@ -75,6 +73,22 @@ public class ProductServiceImpl implements ProductService {
     };
 
     public void deleteProduct(Long id) {
+    }
+
+    private Set<Color> getColors(List<Integer> colorIds) {
+        Set<Color> colors = new HashSet<>(colorRepository.findAllById(colorIds));
+        if (colors.size() != colorIds.size()) {
+            throw new ResourceNotFoundException("One or more colors not found");
+        }
+        return colors;
+    }
+
+    private Set<SizeEntity> getSizes(List<Integer> sizeIds) {
+        Set<SizeEntity> sizes = new HashSet<>(sizeRepository.findAllById(sizeIds));
+        if (sizes.size() != sizeIds.size()) {
+            throw new ResourceNotFoundException("One or more sizes not found");
+        }
+        return sizes;
     }
 
 }

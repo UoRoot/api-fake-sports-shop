@@ -2,7 +2,6 @@ package es.diplock.examples.entities;
 
 import java.util.List;
 
-import jakarta.persistence.AttributeOverride;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

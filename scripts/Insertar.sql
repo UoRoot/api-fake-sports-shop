@@ -113,3 +113,10 @@ VALUES (1, 1),
     (3, 3),
     (4, 1),
     (5, 4);
+
+use api_fake;
+-- Eliminar todos los registros de la tabla 'products'
+DELETE FROM products;
+
+-- Comprobar que los registros se han eliminado (opcional)
+SELECT * FROM products;

@@ -5,6 +5,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import es.diplock.examples.dtos.product.CreateProductDTO;
 import es.diplock.examples.dtos.product.ProductDTO;
+import es.diplock.examples.exceptions.NoContentException;
+import es.diplock.examples.exceptions.ResourceNotFoundException;
 import es.diplock.examples.service.product.ProductService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -29,7 +31,7 @@ public class ProductController {
     public ResponseEntity<List<ProductDTO>> getProducts() {
         List<ProductDTO> productDTOs = productService.findAllProducts();
         if (productDTOs.isEmpty()) {
-            return ResponseEntity.noContent().build();
+            throw new NoContentException("There are no products available");
         }
         return ResponseEntity.ok(productDTOs);
     }
@@ -38,7 +40,7 @@ public class ProductController {
     public ResponseEntity<ProductDTO> getProductById(@PathVariable Long id) {
         ProductDTO productDTO = productService.findProductById(id);
         if (productDTO == null) {
-            return ResponseEntity.notFound().build();
+            throw new ResourceNotFoundException("Product not found");
         }
         return ResponseEntity.ok(productDTO);
     }
