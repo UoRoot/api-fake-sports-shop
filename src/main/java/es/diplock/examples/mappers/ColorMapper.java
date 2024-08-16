@@ -1,24 +1,14 @@
 package es.diplock.examples.mappers;
 
+import org.mapstruct.Mapper;
+
 import es.diplock.examples.dtos.ColorDTO;
 import es.diplock.examples.entities.Color;
 
-public class ColorMapper {
+@Mapper
+public interface ColorMapper {
+    Color toEntity(ColorDTO colorDTO);
 
-    public static ColorDTO toDto(Color color) {
-        if (color == null) {
-            return null;
-        }
-        return new ColorDTO(color.getId(), color.getName());
-    }
+    ColorDTO toDTO(Color color);
 
-    public static Color toEntity(ColorDTO colorDTO) {
-        if (colorDTO == null) {
-            return null;
-        }
-        Color color = new Color();
-        color.setId(colorDTO.id());
-        color.setName(colorDTO.name());
-        return color;
-    }
 }

@@ -19,12 +19,14 @@ public class CategoryService implements BaseService<CategoryDTO, Integer> {
 
     private final CategoryRepository categoryRepository;
 
+    private final CategoryMapper categoryMapper;
+
     @Override
     public CategoryDTO findById(Integer id) {
         Optional<Category> optionalCategory = categoryRepository.findById(id);
 
         if (optionalCategory.isPresent()) {
-            return CategoryMapper.toDto(optionalCategory.get());
+            return categoryMapper.toDTO(optionalCategory.get());
         }
 
         throw new ResourceNotFoundException("Category not found");

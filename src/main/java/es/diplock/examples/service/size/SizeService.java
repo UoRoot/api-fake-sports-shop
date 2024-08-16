@@ -18,12 +18,13 @@ import lombok.RequiredArgsConstructor;
 public class SizeService implements BaseService<SizeDTO, Integer> {
 
     private final SizeRepository sizeRepository;
+    private final SizeMapper sizeMapper;
 
     public SizeDTO findById(Integer id) {
         Optional<SizeEntity> optionalSize = sizeRepository.findById(id);
 
         if (optionalSize.isPresent()) {
-            return SizeMapper.toDto(optionalSize.get());
+            return sizeMapper.toDTO(optionalSize.get());
         }
 
         throw new ResourceNotFoundException("Producto no encontrado");

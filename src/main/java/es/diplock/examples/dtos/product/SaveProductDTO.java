@@ -19,13 +19,15 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class CreateProductDTO {
+public class SaveProductDTO {
 
     @NotBlank(message = "The product name is mandatory")
     @Size(min = 3, max = 100, message = "The product name must be between 3 and 100 characters")
     private String name;
 
     private String description;
+
+    private String imageURL;
 
     @NotNull(message = "The price is mandatory")
     @DecimalMin(value = "00", inclusive = false, message = "The price must be greater than 0")
@@ -39,10 +41,12 @@ public class CreateProductDTO {
     @NotNull(message = "The gender must be 'Male', 'Female' or 'Unisex'")
     private String gender;
 
-    @NotNull(message = "You must include at least one ID")
+    @NotNull(message = "sizesIds is mandatory")
+    @Size(min = 1, message = "You must include at least one ID")
     private List<Integer> sizesIds;
 
-    @NotNull(message = "You must include at least one ID")
+    @NotNull(message = "colorsIds is mandatory")
+    @Size(min = 1, message = "You must include at least one ID")
     private List<Integer> colorsIds;
 
     @NotNull(message = "Category ID is mandatory")

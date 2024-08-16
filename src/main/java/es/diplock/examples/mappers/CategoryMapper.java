@@ -1,23 +1,14 @@
 package es.diplock.examples.mappers;
 
+import org.mapstruct.Mapper;
+
 import es.diplock.examples.dtos.CategoryDTO;
 import es.diplock.examples.entities.Category;
 
-public class CategoryMapper {
-    public static CategoryDTO toDto(Category category) {
-        if (category == null) {
-            return null;
-        }
-        return new CategoryDTO(category.getId(), category.getName());
-    }
+@Mapper
+public interface CategoryMapper {
 
-    public static Category toEntity(CategoryDTO categoryDTO) {
-        if (categoryDTO == null) {
-            return null;
-        }
-        Category category = new Category();
-        category.setId(categoryDTO.id());
-        category.setName(categoryDTO.name());
-        return category;
-    }
+    Category toEntity(CategoryDTO categoryDTO);
+
+    CategoryDTO toDTO(Category category);
 }

@@ -2,7 +2,7 @@ package es.diplock.examples.service.product;
 
 import java.util.List;
 
-import es.diplock.examples.dtos.product.CreateProductDTO;
+import es.diplock.examples.dtos.product.SaveProductDTO;
 import es.diplock.examples.dtos.product.ProductDTO;
 
 public interface ProductService {
@@ -11,9 +11,9 @@ public interface ProductService {
 
     ProductDTO findProductById(Long id);
 
-    ProductDTO saveProduct(CreateProductDTO createProductDTO);
+    ProductDTO saveProduct(SaveProductDTO saveProductDTO);
 
-    void updateProduct(ProductDTO productDTO);
+    ProductDTO updateProduct(Long id, SaveProductDTO productDTO);
 
     void deleteProduct(Long id);
 

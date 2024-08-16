@@ -1,10 +1,15 @@
 package es.diplock.examples.mappers;
 
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import es.diplock.examples.dtos.product.CreateProductDTO;
+import org.mapstruct.BeanMapping;
+import org.mapstruct.InheritInverseConfiguration;
+import org.mapstruct.Mapper;
+
 import es.diplock.examples.dtos.product.ProductDTO;
+import es.diplock.examples.dtos.product.SaveProductDTO;
 import es.diplock.examples.entities.Brand;
 import es.diplock.examples.entities.Category;
 import es.diplock.examples.entities.Color;
@@ -12,52 +17,97 @@ import es.diplock.examples.entities.Product;
 import es.diplock.examples.entities.SizeEntity;
 import es.diplock.examples.enums.GenderEnum;
 
-public class ProductMapper {
+import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
+import org.mapstruct.Mappings;
+import org.mapstruct.NullValuePropertyMappingStrategy;
 
-    public static ProductDTO toDto(Product producto) {
-        if (producto == null) {
+@Mapper(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE, uses = { BrandMapper.class,
+        CategoryMapper.class, SizeMapper.class,
+        ColorMapper.class })
+public interface ProductMapper {
+
+    @Mappings({
+            @Mapping(target = "sizes", source = "sizesIds"),
+            @Mapping(target = "colors", source = "colorsIds"),
+            @Mapping(target = "category.id", source = "categoryId"),
+            @Mapping(target = "brand.id", source = "brandId")
+    })
+    Product saveToEntity(SaveProductDTO saveProductDTO);
+
+    @InheritInverseConfiguration(name = "saveToEntity")
+    SaveProductDTO saveToDTO(Product product);
+
+    @Mappings({
+            @Mapping(target = "sizes", source = "sizesIds"),
+            @Mapping(target = "colors", source = "colorsIds"),
+            @Mapping(target = "category.id", source = "categoryId"),
+            @Mapping(target = "brand.id", source = "brandId")
+    })
+    Product toEntity(ProductDTO productDTO);
+
+    @InheritInverseConfiguration(name = "toEntity")
+    ProductDTO toDTO(Product product);
+
+    List<Product> toEntityList(List<ProductDTO> productDTOs);
+
+    List<ProductDTO> toDTOList(List<Product> products);
+
+    @Mapping(target = "sizes", ignore = true)
+    @Mapping(target = "colors", ignore = true)
+    @Mapping(target = "category", ignore = true)
+    @Mapping(target = "brand", ignore = true)
+    void updateEntityFromDto(SaveProductDTO dto, @MappingTarget Product entity);
+
+    default Category mapIdToCategory(Integer id) {
+        if (id == null)
             return null;
-        }
-
-        Set<Integer> colores = producto.getColors().stream()
-                .map(color -> color.getId())
-                .collect(Collectors.toSet());
-
-        Set<Integer> tallas = producto.getSizes().stream()
-                .map(talla -> talla.getId())
-                .collect(Collectors.toSet());
-
-        return new ProductDTO(
-                producto.getId(),
-                producto.getName(),
-                producto.getDescription(),
-                producto.getPrice(),
-                producto.getStockQuantity(),
-                producto.getGender().getDescription(),
-                tallas,
-                colores,
-                producto.getCategory().getId(),
-                producto.getBrand().getId());
+        return Category.builder().id(id).build();
     }
 
-    public static Product toEntity(CreateProductDTO productoDTO, Category categoria, Brand brand, Set<Color> colores,
-            Set<SizeEntity> tallas) {
-        if (productoDTO == null) {
+    default Brand mapIdToBrand(Integer id) {
+        if (id == null)
             return null;
-        }
-
-        Product producto = new Product();
-        producto.setName(productoDTO.getName());
-        producto.setDescription(productoDTO.getDescription());
-        producto.setPrice(productoDTO.getPrice());
-        producto.setStockQuantity(productoDTO.getStockQuantity());
-        producto.setGender(GenderEnum.getEnum(productoDTO.getGender()));
-        producto.setSizes(tallas);
-        producto.setColors(colores);
-        producto.setCategory(categoria);
-        producto.setBrand(brand);
-
-        return producto;
+        return Brand.builder().id(id).build();
     }
 
+    default Set<SizeEntity> mapSizeIdsToSizes(List<Integer> ids) {
+        if (ids == null)
+            return null;
+        return ids.stream()
+                .map(id -> SizeEntity.builder().id(id).build())
+                .collect(Collectors.toSet());
+    }
+
+    default List<Integer> mapSizesToSizeIds(Set<SizeEntity> sizes) {
+        if (sizes == null)
+            return null;
+        return sizes.stream()
+                .map(size -> size.getId().intValue())
+                .collect(Collectors.toList());
+    }
+
+    default Set<Color> mapColorIdsToColors(List<Integer> ids) {
+        if (ids == null)
+            return null;
+        return ids.stream()
+                .map(id -> Color.builder().id(id).build())
+                .collect(Collectors.toSet());
+    }
+
+    default List<Integer> mapColorsToColorIds(Set<Color> colors) {
+        if (colors == null)
+            return null;
+        return colors.stream()
+                .map(color -> color.getId().intValue())
+                .collect(Collectors.toList());
+    }
+
+    default GenderEnum mapGenderStringToGenderEnum(String gender) {
+        return GenderEnum.getEnum(gender);
+    }
+
+    default String mapGenderEnumToGenderString(GenderEnum gender) {
+        return gender.getDescription();
+    }
 }

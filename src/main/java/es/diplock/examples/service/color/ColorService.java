@@ -18,13 +18,14 @@ import lombok.RequiredArgsConstructor;
 public class ColorService implements BaseService<ColorDTO, Integer> {
 
     private final ColorRepository colorRepository;
+    private final ColorMapper colorMapper;
 
     @Override
     public ColorDTO findById(Integer id) {
         Optional<Color> optionalColor = colorRepository.findById(id);
 
         if (optionalColor.isPresent()) {
-            return ColorMapper.toDto(optionalColor.get());
+            return colorMapper.toDTO(optionalColor.get());
         }
 
         throw new ResourceNotFoundException("Color no encontrado");

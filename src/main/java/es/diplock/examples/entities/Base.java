@@ -11,20 +11,16 @@ import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
-@RequiredArgsConstructor
 @NoArgsConstructor
 @MappedSuperclass
 public class Base {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @NonNull
   private Long id;
 
   @Column(name = "created_date")
@@ -32,6 +28,10 @@ public class Base {
 
   @Column(name = "updated_date")
   private LocalDateTime updatedDate;
+
+  public Base(Long id) {
+    this.id = id;
+  }
 
   @PrePersist
   public void prePersist() {

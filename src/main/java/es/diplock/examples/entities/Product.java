@@ -34,6 +34,9 @@ public class Product extends Base {
     @Column(name = "description", columnDefinition = "TEXT")
     private String description;
 
+    @Column(name = "image_url", columnDefinition = "TEXT")
+    private String imageURL;
+
     @Column(name = "price", nullable = false, precision = 10, scale = 2)
     private BigDecimal price;
 
@@ -61,12 +64,13 @@ public class Product extends Base {
     private Category category;
 
     @Builder
-    public Product(Long id, String name, String description, BigDecimal price, Integer stockQuantity,
+    public Product(Long id, String name, String description, String imageURL, BigDecimal price, Integer stockQuantity,
             GenderEnum gender,
             Set<SizeEntity> sizes, Set<Color> colors, Category category, Brand brand) {
         super(id);
         this.name = name;
         this.description = description;
+        this.imageURL = imageURL;
         this.price = price;
         this.stockQuantity = stockQuantity;
         this.gender = gender;

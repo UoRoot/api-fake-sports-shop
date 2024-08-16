@@ -3,11 +3,9 @@ package es.diplock.examples.service.product;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyList;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -15,18 +13,17 @@ import static org.mockito.Mockito.when;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
 
-import es.diplock.examples.dtos.product.CreateProductDTO;
+import es.diplock.examples.dtos.product.SaveProductDTO;
 import es.diplock.examples.dtos.product.ProductDTO;
 import es.diplock.examples.entities.Brand;
 import es.diplock.examples.entities.Category;
@@ -58,6 +55,10 @@ public class ProductServiceImplTest {
 
     @Mock
     private BrandRepository brandRepository;
+
+    @Mock
+    @Autowired
+    private ProductMapper productMapper;
 
     @InjectMocks
     private ProductServiceImpl productService;
@@ -106,6 +107,7 @@ public class ProductServiceImplTest {
                     1L,
                     "Camiseta de algodón",
                     "Camiseta deportiva clásica de algodón, ideal para entrenamientos de baja intensidad.",
+                    "image.jpg",
                     new BigDecimal("19.99"),
                     100,
                     GenderEnum.MALE,
@@ -118,6 +120,7 @@ public class ProductServiceImplTest {
                     2L,
                     "Leggins de compresión",
                     "Leggins de compresión para running, con tecnología de secado rápido y soporte muscular.",
+                    "image.jpg",
                     new BigDecimal("59.99"),
                     30,
                     GenderEnum.FEMALE,
@@ -131,6 +134,7 @@ public class ProductServiceImplTest {
                     3L,
                     "Gorra de running ajustable",
                     "Gorra deportiva ajustable con visera curva, ideal para proteger del sol durante tus carreras.",
+                    "image.jpg",
                     new BigDecimal("15.99"),
                     200,
                     GenderEnum.UNISEX,
@@ -160,8 +164,7 @@ public class ProductServiceImplTest {
         @DisplayName("Should I return a product by ID")
         void testFindProductById_Success() {
             Long id = 1L;
-            Optional<Product> product = products.stream()
-                    .filter(p -> p.getId().equals(id)).findFirst();
+            Optional<Product> product = products.stream().filter(p -> p.getId().equals(id)).findFirst();
 
             when(productRepository.findById(id)).thenReturn(product);
 
@@ -170,7 +173,7 @@ public class ProductServiceImplTest {
             assertAll(
                     () -> assertNotNull(productDTO),
                     () -> assertEquals(id, productDTO.id()),
-                    () -> assertEquals(ProductMapper.toDto(product.get()), productDTO));
+                    () -> assertEquals(productMapper.toDTO(product.get()), productDTO));
         }
 
         @Test
@@ -187,6 +190,7 @@ public class ProductServiceImplTest {
                     4L,
                     "Pantalon Deportivo",
                     "Pantalon deportivo cómodo y flexible, ideal para actividades físicas.",
+                    "image.jpg",
                     new BigDecimal("45.00"),
                     50,
                     GenderEnum.MALE,
@@ -195,7 +199,7 @@ public class ProductServiceImplTest {
                     actualCategory,
                     actualBrand));
 
-            CreateProductDTO createProductDTO = CreateProductDTO.builder()
+            SaveProductDTO createProductDTO = SaveProductDTO.builder()
                     .name("Pantalon Deportivo")
                     .description("Pantalon deportivo cómodo y flexible, ideal para actividades físicas.")
                     .price(new BigDecimal("45.00"))
@@ -212,11 +216,12 @@ public class ProductServiceImplTest {
                     4L,
                     "Pantalon Deportivo",
                     "Pantalon deportivo cómodo y flexible, ideal para actividades físicas.",
+                    "image.jpg",
                     new BigDecimal("45.00"),
                     50,
                     "Male",
-                    new HashSet<>(Arrays.asList(2, 3)),
-                    new HashSet<>(Arrays.asList(2)),
+                    Arrays.asList(2, 3),
+                    Arrays.asList(2),
                     2,
                     4);
 
