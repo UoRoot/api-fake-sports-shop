@@ -60,7 +60,11 @@
 			<artifactId>mysql-connector-j</artifactId>
 			<version>${com.mysql.mysql-connector-j.version}</version>
 		</dependency>
-		<!-- sino funciona removemos a aprtir de aquí -->
+		<dependency>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+			<scope>test</scope>
+		</dependency>
 		<dependency>
 			<groupId>org.mapstruct</groupId>
 			<artifactId>mapstruct</artifactId>

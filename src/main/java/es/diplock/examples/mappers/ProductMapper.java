@@ -4,17 +4,16 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.mapstruct.BeanMapping;
 import org.mapstruct.InheritInverseConfiguration;
 import org.mapstruct.Mapper;
 
 import es.diplock.examples.dtos.product.ProductDTO;
 import es.diplock.examples.dtos.product.SaveProductDTO;
 import es.diplock.examples.entities.Brand;
-import es.diplock.examples.entities.Category;
 import es.diplock.examples.entities.Color;
 import es.diplock.examples.entities.Product;
 import es.diplock.examples.entities.SizeEntity;
+import es.diplock.examples.entities.Subcategory;
 import es.diplock.examples.enums.GenderEnum;
 
 import org.mapstruct.Mapping;
@@ -22,15 +21,16 @@ import org.mapstruct.MappingTarget;
 import org.mapstruct.Mappings;
 import org.mapstruct.NullValuePropertyMappingStrategy;
 
-@Mapper(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE, uses = { BrandMapper.class,
-        CategoryMapper.class, SizeMapper.class,
+@Mapper(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE,
+    uses = { BrandMapper.class,
+        SubcategoryMapper.class, SizeMapper.class,
         ColorMapper.class })
 public interface ProductMapper {
 
     @Mappings({
             @Mapping(target = "sizes", source = "sizesIds"),
             @Mapping(target = "colors", source = "colorsIds"),
-            @Mapping(target = "category.id", source = "categoryId"),
+            @Mapping(target = "subcategory.id", source = "subcategoryId"),
             @Mapping(target = "brand.id", source = "brandId")
     })
     Product saveToEntity(SaveProductDTO saveProductDTO);
@@ -41,7 +41,7 @@ public interface ProductMapper {
     @Mappings({
             @Mapping(target = "sizes", source = "sizesIds"),
             @Mapping(target = "colors", source = "colorsIds"),
-            @Mapping(target = "category.id", source = "categoryId"),
+            @Mapping(target = "subcategory.id", source = "subcategoryId"),
             @Mapping(target = "brand.id", source = "brandId")
     })
     Product toEntity(ProductDTO productDTO);
@@ -53,16 +53,18 @@ public interface ProductMapper {
 
     List<ProductDTO> toDTOList(List<Product> products);
 
-    @Mapping(target = "sizes", ignore = true)
-    @Mapping(target = "colors", ignore = true)
-    @Mapping(target = "category", ignore = true)
-    @Mapping(target = "brand", ignore = true)
+    @Mappings({
+        @Mapping(target = "sizes", ignore = true),
+        @Mapping(target = "colors", ignore = true),
+        @Mapping(target = "subcategory", ignore = true),
+        @Mapping(target = "brand", ignore = true)
+    })
     void updateEntityFromDto(SaveProductDTO dto, @MappingTarget Product entity);
 
-    default Category mapIdToCategory(Integer id) {
+    default Subcategory mapIdToSubcategory(Integer id) {
         if (id == null)
             return null;
-        return Category.builder().id(id).build();
+        return Subcategory.builder().id(id).build();
     }
 
     default Brand mapIdToBrand(Integer id) {

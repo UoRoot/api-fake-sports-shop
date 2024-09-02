@@ -37,3 +37,9 @@ build/
 .sdkmanrc
 /scripts
 methods.http
+
+## ignorando archivos por ahora
+.dockerignore
+Dockerfile
+compose.yml
+/src/test/**

@@ -4,22 +4,27 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import es.diplock.examples.dtos.product.SaveProductDTO;
 import es.diplock.examples.dtos.product.ProductDTO;
+import es.diplock.examples.dtos.product.ProductSearchCriteriaDTO;
 import es.diplock.examples.entities.Brand;
-import es.diplock.examples.entities.Category;
 import es.diplock.examples.entities.Color;
 import es.diplock.examples.entities.Product;
 import es.diplock.examples.entities.SizeEntity;
+import es.diplock.examples.entities.Subcategory;
 import es.diplock.examples.exceptions.ResourceNotFoundException;
 import es.diplock.examples.mappers.ProductMapper;
 import es.diplock.examples.repositories.BrandRepository;
-import es.diplock.examples.repositories.CategoryRepository;
 import es.diplock.examples.repositories.ColorRepository;
 import es.diplock.examples.repositories.ProductRepository;
 import es.diplock.examples.repositories.SizeRepository;
+import es.diplock.examples.repositories.SubcategoryRepository;
+import es.diplock.examples.specification.ProductSpecification;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
@@ -33,15 +38,16 @@ public class ProductServiceImpl implements ProductService {
 
     private final SizeRepository sizeRepository;
 
-    private final CategoryRepository categoryRepository;
+    private final SubcategoryRepository subcategoryRepository;
 
     private final BrandRepository brandRepository;
 
     private final ProductMapper productMapper;
 
-    public List<ProductDTO> findAllProducts() {
-        List<Product> products = productRepository.findAll();
-        return productMapper.toDTOList(products);
+    public Page<ProductDTO> findAllProducts(ProductSearchCriteriaDTO criteria) {
+        Specification<Product> spec = new ProductSpecification(criteria);
+        Page<Product> products = productRepository.findAll(spec, PageRequest.of(criteria.getPage() - 1, criteria.getSize()));
+        return products.map(productMapper::toDTO);
     }
 
     public ProductDTO findProductById(Long id) {
@@ -51,13 +57,13 @@ public class ProductServiceImpl implements ProductService {
     }
 
     public ProductDTO saveProduct(SaveProductDTO productDTO) {
-        Category category = findCategoryById(productDTO.getCategoryId());
+        Subcategory subcategory = findCategoryById(productDTO.getSubcategoryId());
         Brand brand = findBrandById(productDTO.getBrandId());
         Set<Color> colors = new HashSet<>(findColorsByIds(productDTO.getColorsIds()));
         Set<SizeEntity> sizes = new HashSet<>(findSizesByIds(productDTO.getSizesIds()));
 
         Product product = productMapper.saveToEntity(productDTO);
-        product.setCategory(category);
+        product.setSubcategory(subcategory);
         product.setBrand(brand);
         product.setColors(colors);
         product.setSizes(sizes);
@@ -91,8 +97,8 @@ public class ProductServiceImpl implements ProductService {
 
     }
 
-    private Category findCategoryById(Integer categoryId) {
-        return categoryRepository.findById(categoryId)
+    private Subcategory findCategoryById(Integer categoryId) {
+        return subcategoryRepository.findById(categoryId)
                 .orElseThrow(() -> new ResourceNotFoundException("Category not found"));
     }
 
@@ -118,11 +124,11 @@ public class ProductServiceImpl implements ProductService {
     }
 
     private void setRelatedEntities(Product product, SaveProductDTO dto) {
-        if (dto.getCategoryId() != null) {
-            Category category = categoryRepository.findById(dto.getCategoryId())
+        if (dto.getSubcategoryId() != null) {
+            Subcategory subcategory = subcategoryRepository.findById(dto.getSubcategoryId())
                     .orElseThrow(
-                            () -> new ResourceNotFoundException("Category not found with id: " + dto.getCategoryId()));
-            product.setCategory(category);
+                            () -> new ResourceNotFoundException("Category not found with id: " + dto.getSubcategoryId()));
+            product.setSubcategory(subcategory);
         }
         if (dto.getBrandId() != null) {
             Brand brand = brandRepository.findById(dto.getBrandId())

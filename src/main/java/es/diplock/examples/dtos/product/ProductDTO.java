@@ -7,12 +7,12 @@ public record ProductDTO(
         Long id,
         String name,
         String description,
-        String imageURL,
+        String imageUrl,
         BigDecimal price,
         Integer stockQuantity,
         String gender,
         List<Integer> sizesIds,
         List<Integer> colorsIds,
-        Integer categoryId,
+        Integer subcategoryId,
         Integer brandId) {
 }

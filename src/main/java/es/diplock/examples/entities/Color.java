@@ -24,9 +24,6 @@ public class Color {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    // @NotBlank(message = "campo requerido")
-    // @Size(min = 3, max = 50, message = "name del color debe tener entre 3 a 50
-    // caracteres")
     @Column(name = "name", nullable = false, length = 50)
     private String name;
 }

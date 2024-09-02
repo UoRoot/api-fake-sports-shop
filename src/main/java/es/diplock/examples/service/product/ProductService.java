@@ -1,13 +1,15 @@
 package es.diplock.examples.service.product;
 
-import java.util.List;
-
 import es.diplock.examples.dtos.product.SaveProductDTO;
+
+import org.springframework.data.domain.Page;
+
 import es.diplock.examples.dtos.product.ProductDTO;
+import es.diplock.examples.dtos.product.ProductSearchCriteriaDTO;
 
 public interface ProductService {
 
-    List<ProductDTO> findAllProducts();
+    Page<ProductDTO> findAllProducts(ProductSearchCriteriaDTO criteria);
 
     ProductDTO findProductById(Long id);
 

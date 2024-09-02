@@ -27,7 +27,7 @@ public class SaveProductDTO {
 
     private String description;
 
-    private String imageURL;
+    private String imageUrl;
 
     @NotNull(message = "The price is mandatory")
     @DecimalMin(value = "00", inclusive = false, message = "The price must be greater than 0")
@@ -49,8 +49,8 @@ public class SaveProductDTO {
     @Size(min = 1, message = "You must include at least one ID")
     private List<Integer> colorsIds;
 
-    @NotNull(message = "Category ID is mandatory")
-    private Integer categoryId;
+    @NotNull(message = "Subcategory ID is mandatory")
+    private Integer subcategoryId;
 
     @NotNull(message = "Brand ID is mandatory")
     private Integer brandId;

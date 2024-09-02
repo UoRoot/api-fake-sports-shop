@@ -5,17 +5,20 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import es.diplock.examples.dtos.product.SaveProductDTO;
+import es.diplock.examples.controllers.responses.ResponseBody;
 import es.diplock.examples.dtos.product.ProductDTO;
+import es.diplock.examples.dtos.product.ProductSearchCriteriaDTO;
 import es.diplock.examples.exceptions.NoContentException;
 import es.diplock.examples.exceptions.ResourceNotFoundException;
 import es.diplock.examples.service.product.ProductService;
-import es.diplock.examples.validators.product.PartialProductValidator;
+
+import static es.diplock.examples.utils.ConverterToResponses.*;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 import java.net.URI;
-import java.util.List;
 
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,15 +33,16 @@ import org.springframework.web.bind.annotation.PutMapping;
 public class ProductController {
 
     private final ProductService productService;
-    // private final PartialProductValidator partialProductValidator;
 
     @GetMapping
-    public ResponseEntity<List<ProductDTO>> getProducts() {
-        List<ProductDTO> productDTOs = productService.findAllProducts();
+    public ResponseEntity<ResponseBody> getProducts(ProductSearchCriteriaDTO criteria) {
+        Page<ProductDTO> productDTOs = productService.findAllProducts(criteria);
+
         if (productDTOs.isEmpty()) {
             throw new NoContentException("There are no products available");
         }
-        return ResponseEntity.ok(productDTOs);
+
+        return ResponseEntity.ok(pageToResponseBody(productDTOs));
     }
 
     @GetMapping("/{id}")
@@ -62,7 +66,7 @@ public class ProductController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ProductDTO> updateProduct(@PathVariable Long id, @RequestBody SaveProductDTO productDTO) {
+    public ResponseEntity<ProductDTO> updateProduct(@PathVariable Long id, @Valid @RequestBody SaveProductDTO productDTO) {
         ProductDTO updatedProduct = productService.updateProduct(id, productDTO);
         return ResponseEntity.ok(updatedProduct);
     }
@@ -72,23 +76,5 @@ public class ProductController {
         productService.deleteProduct(id);
         return ResponseEntity.ok("Producto eliminado con exito");
     }
-    /* ESTE METODO ETÁ EN PROCESO */
-    /* debo crear otro metodo para que no se confunda con el de arriba */
-    // @PatchMapping("/products/{id}")
-    // public ResponseEntity<?> partiallyUpdateProduct(
-    // @PathVariable Long id,
-    // @RequestBody SaveProductDTO productDTO,
-    // BindingResult result) {
-
-    // partialProductValidator.validate(productDTO, result);
-
-    // if (result.hasErrors()) {
-    // return ResponseEntity.badRequest().body(result.getAllErrors());
-    // }
-
-    // ProductDTO updatedProduct = productService.updateProduct(id, productDTO);
-
-    // return ResponseEntity.ok(updatedProduct);
-    // }
 
 }

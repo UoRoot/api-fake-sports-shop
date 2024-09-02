@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
 
+import es.diplock.examples.entities.audit.DateAudit;
 import es.diplock.examples.enums.GenderEnum;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -11,11 +12,15 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -24,9 +29,15 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Entity
 @Table(name = "products")
-public class Product extends Base {
+public class Product extends DateAudit {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @Column(name = "name", nullable = false, length = 100)
     private String name;
@@ -35,7 +46,7 @@ public class Product extends Base {
     private String description;
 
     @Column(name = "image_url", columnDefinition = "TEXT")
-    private String imageURL;
+    private String imageUrl;
 
     @Column(name = "price", nullable = false, precision = 10, scale = 2)
     private BigDecimal price;
@@ -60,24 +71,7 @@ public class Product extends Base {
     private Brand brand;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "category_id", nullable = false)
-    private Category category;
-
-    @Builder
-    public Product(Long id, String name, String description, String imageURL, BigDecimal price, Integer stockQuantity,
-            GenderEnum gender,
-            Set<SizeEntity> sizes, Set<Color> colors, Category category, Brand brand) {
-        super(id);
-        this.name = name;
-        this.description = description;
-        this.imageURL = imageURL;
-        this.price = price;
-        this.stockQuantity = stockQuantity;
-        this.gender = gender;
-        this.sizes = sizes;
-        this.colors = colors;
-        this.category = category;
-        this.brand = brand;
-    }
+    @JoinColumn(name = "subcategory_id", nullable = false)
+    private Subcategory subcategory;
 
 }

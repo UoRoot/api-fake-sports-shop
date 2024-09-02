@@ -24,21 +24,24 @@ import lombok.Setter;
 @Entity
 @Table(name = "categories")
 public class Category {
-
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-
+    
     @Column(name = "name", nullable = false, length = 50)
     private String name;
-
+    
+    @Column(name = "image_url", columnDefinition = "TEXT")
+    private String imageUrl;
+    
     @OneToMany(mappedBy = "category", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<Product> products;
-
+    private List<Subcategory> subCategories;
+    
     @Builder
-    public Category(Integer id, String name) {
+    public Category(Integer id, String name, String imageUrl) {
         this.id = id;
         this.name = name;
+        this.imageUrl = imageUrl;
     }
-
 }
