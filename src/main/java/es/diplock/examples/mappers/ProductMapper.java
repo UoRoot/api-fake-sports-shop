@@ -19,15 +19,14 @@ import es.diplock.examples.enums.GenderEnum;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.Mappings;
-import org.mapstruct.NullValuePropertyMappingStrategy;
 
-@Mapper(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE,
-    uses = { BrandMapper.class,
+@Mapper(uses = { BrandMapper.class,
         SubcategoryMapper.class, SizeMapper.class,
         ColorMapper.class })
 public interface ProductMapper {
 
     @Mappings({
+            @Mapping(target = "id", ignore = true),
             @Mapping(target = "sizes", source = "sizesIds"),
             @Mapping(target = "colors", source = "colorsIds"),
             @Mapping(target = "subcategory.id", source = "subcategoryId"),
@@ -54,10 +53,14 @@ public interface ProductMapper {
     List<ProductDTO> toDTOList(List<Product> products);
 
     @Mappings({
-        @Mapping(target = "sizes", ignore = true),
-        @Mapping(target = "colors", ignore = true),
-        @Mapping(target = "subcategory", ignore = true),
-        @Mapping(target = "brand", ignore = true)
+            @Mapping(target = "sizes", ignore = true),
+            @Mapping(target = "colors", ignore = true),
+            @Mapping(target = "subcategory", ignore = true),
+            @Mapping(target = "brand", ignore = true),
+            @Mapping(target = "createdDate", ignore = true),
+            @Mapping(target = "updatedDate", ignore = true),
+            @Mapping(target = "id", ignore = true)
+
     })
     void updateEntityFromDto(SaveProductDTO dto, @MappingTarget Product entity);
 
