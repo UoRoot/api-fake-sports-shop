@@ -3,6 +3,7 @@ package es.diplock.examples.service.product;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -46,7 +47,8 @@ public class ProductServiceImpl implements ProductService {
 
     public Page<ProductDTO> findAllProducts(ProductSearchCriteriaDTO criteria) {
         Specification<Product> spec = new ProductSpecification(criteria);
-        Page<Product> products = productRepository.findAll(spec, PageRequest.of(criteria.getPage() - 1, criteria.getSize()));
+        Page<Product> products = productRepository.findAll(spec,
+                PageRequest.of(criteria.getPage() - 1, criteria.getSize()));
         return products.map(productMapper::toDTO);
     }
 
@@ -124,23 +126,32 @@ public class ProductServiceImpl implements ProductService {
     }
 
     private void setRelatedEntities(Product product, SaveProductDTO dto) {
-        if (dto.getSubcategoryId() != null) {
-            Subcategory subcategory = subcategoryRepository.findById(dto.getSubcategoryId())
-                    .orElseThrow(
-                            () -> new ResourceNotFoundException("Category not found with id: " + dto.getSubcategoryId()));
-            product.setSubcategory(subcategory);
-        }
-        if (dto.getBrandId() != null) {
-            Brand brand = brandRepository.findById(dto.getBrandId())
-                    .orElseThrow(() -> new ResourceNotFoundException("Brand not found with id: " + dto.getBrandId()));
-            product.setBrand(brand);
-        }
-        if (dto.getColorsIds() != null && dto.getColorsIds().size() > 0) {
-            product.setColors(new HashSet<>(findColorsByIds(dto.getColorsIds())));
+        if (dto.getSubcategoryId() != null && !dto.getSubcategoryId().equals(product.getSubcategory().getId())) {
+            product.setSubcategory(subcategoryRepository.getReferenceById(dto.getSubcategoryId()));
         }
 
-        if (dto.getSizesIds() != null && dto.getSizesIds().size() > 0) {
-            product.setSizes(new HashSet<>(findSizesByIds(dto.getSizesIds())));
+        if (dto.getBrandId() != null && !dto.getBrandId().equals(product.getBrand().getId())) {
+            product.setBrand(brandRepository.getReferenceById(dto.getBrandId()));
+        }
+
+        if (dto.getColorsIds() != null && !dto.getColorsIds().isEmpty()) {
+            Set<Integer> currentColorIds = product.getColors().stream()
+                    .map(Color::getId)
+                    .collect(Collectors.toSet());
+
+            if (!currentColorIds.equals(new HashSet<>(dto.getColorsIds()))) {
+                product.setColors(new HashSet<>(colorRepository.findAllById(dto.getColorsIds())));
+            }
+        }
+
+        if (dto.getSizesIds() != null && !dto.getSizesIds().isEmpty()) {
+            Set<Integer> currentSizeIds = product.getSizes().stream()
+                    .map(SizeEntity::getId)
+                    .collect(Collectors.toSet());
+
+            if (!currentSizeIds.equals(new HashSet<>(dto.getSizesIds()))) {
+                product.setSizes(new HashSet<>(sizeRepository.findAllById(dto.getSizesIds())));
+            }
         }
     }
 
