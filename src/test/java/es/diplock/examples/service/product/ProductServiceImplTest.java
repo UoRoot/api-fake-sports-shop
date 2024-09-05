@@ -4,8 +4,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyList;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.ArgumentMatchers.refEq;
 import static org.mockito.Mockito.*;
 
 import java.math.BigDecimal;
@@ -164,6 +162,7 @@ public class ProductServiceImplTest {
         @Test
         @DisplayName("Should return a list of products")
         void testFindAllProducts_Success() {
+            // Given
             ProductSearchCriteriaDTO criteria = new ProductSearchCriteriaDTO(
                     1,
                     2,
@@ -173,16 +172,21 @@ public class ProductServiceImplTest {
                     "price",
                     "asc");
 
+            // When
             when(productRepository.findAll(any(ProductSpecification.class), any(Pageable.class)))
                     .thenReturn(new PageImpl<>(List.of(products.get(0), products.get(3))));
 
             Page<ProductDTO> actualProducts = productService.findAllProducts(criteria);
 
+            // Then
             assertAll(
                     () -> assertNotNull(actualProducts),
                     () -> assertEquals(2, actualProducts.getSize()),
                     () -> assertEquals(1L, actualProducts.getContent().get(0).id()),
                     () -> assertEquals(4L, actualProducts.getContent().get(1).id()));
+
+            // Verify
+            verify(productRepository).findAll(any(ProductSpecification.class), any(Pageable.class));
         }
 
         @Test
@@ -202,7 +206,8 @@ public class ProductServiceImplTest {
                     () -> assertNotNull(productDTO),
                     () -> assertEquals(1L, productDTO.id()));
             
-            verifyRepositories(0, 0, 0, 0, 0);
+            // Verify
+            verify(productRepository, times(1)).findById(id);
         }
 
         @Test
@@ -226,11 +231,13 @@ public class ProductServiceImplTest {
             // mock related entities
             Subcategory mockSubcategory = subcategories.get(1); // Vends
             Brand mockBrand = brands.get(3); // Under Armour
-            Set<SizeEntity> mockSizes = Set.of(sizes.get(2), sizes.get(1)); // M and L
-            Set<Color> mockColors = Set.of(colors.get(1)); // Blue
+            List<SizeEntity> mockSizes = List.of(sizes.get(2), sizes.get(1)); // M and L
+            List<Color> mockColors = List.of(colors.get(1)); // Blue
 
-            setupMocks(Optional.of(mockSubcategory), Optional.of(mockBrand), List.copyOf(mockColors),
-                    List.copyOf(mockSizes));
+            when(subcategoryRepository.findById(2)).thenReturn(Optional.of(mockSubcategory));
+            when(brandRepository.findById(4)).thenReturn(Optional.of(mockBrand));
+            when(colorRepository.findAllById(anyList())).thenReturn(mockColors);
+            when(sizeRepository.findAllById(anyList())).thenReturn(mockSizes);
 
             // mock save
             when(productRepository.save(any(Product.class))).thenAnswer(invocation -> {
@@ -252,7 +259,11 @@ public class ProductServiceImplTest {
                 () -> assertTrue(actualDTO.sizesIds().containsAll(List.of(2, 3))));
 
             // Verify
-            verifyRepositories(1, 1, 1, 1, 1);
+            verify(subcategoryRepository, times(1)).findById(2);
+            verify(brandRepository, times(1)).findById(4);
+            verify(colorRepository, times(1)).findAllById(anyList());
+            verify(sizeRepository, times(1)).findAllById(anyList());
+            verify(productRepository, times(1)).save(any(Product.class));
         }
 
         @Test
@@ -291,12 +302,14 @@ public class ProductServiceImplTest {
             when(productRepository.findById(id)).thenReturn(Optional.of(product));
 
             // mock related entities
-            Subcategory mockSubcategory = subcategories.get(0);
             Brand mockBrand = brands.get(0);
             List<Color> mockColors = Arrays.asList(colors.get(0), colors.get(2));
             List<SizeEntity> mockSizes = Arrays.asList(sizes.get(0), sizes.get(1));
 
-            setupMocks(Optional.of(mockSubcategory), Optional.of(mockBrand), mockColors, mockSizes);
+            when(brandRepository.getReferenceById(1)).thenReturn(mockBrand);
+            when(colorRepository.findAllById(anyList())).thenReturn(mockColors);
+            when(sizeRepository.findAllById(anyList())).thenReturn(mockSizes);
+
 
             // mock save
             when(productRepository.save(any(Product.class))).thenAnswer(invocation -> {
@@ -320,10 +333,9 @@ public class ProductServiceImplTest {
 
             // Verify
             verify(productRepository).findById(id);
-            verify(subcategoryRepository).findById(1);
-            verify(brandRepository).findById(1);
-            verify(colorRepository).findAllById(Arrays.asList(1, 3));
-            verify(sizeRepository).findAllById(Arrays.asList(1, 2));
+            verify(brandRepository).getReferenceById(1);
+            verify(colorRepository).findAllById(List.of(1, 3));
+            verify(sizeRepository).findAllById(List.of(1, 2));
             verify(productRepository).save(any(Product.class));
         }
     }
@@ -372,26 +384,5 @@ public class ProductServiceImplTest {
             // a eliminar no exista
             // productService.deleteProduct(id) debería lanzar ResourceNotFoundException
         }
-    }
-
-    private void verifyRepositories(int subcategoryTimes, int brandTimes, int colorTimes, int sizeTimes,
-            int productTimes) {
-        verify(subcategoryRepository, times(subcategoryTimes)).findById(anyInt());
-        verify(brandRepository, times(brandTimes)).findById(anyInt());
-        verify(colorRepository, times(colorTimes)).findAllById(anyList());
-        verify(sizeRepository, times(sizeTimes)).findAllById(anyList());
-        verify(productRepository, times(productTimes)).save(any(Product.class));
-    }
-
-    private void setupMocks(Optional<Subcategory> subcategory, Optional<Brand> brand, List<Color> colors,
-            List<SizeEntity> sizes) {
-        if (subcategory != null)
-            when(subcategoryRepository.findById(anyInt())).thenReturn(subcategory);
-        if (brand != null)
-            when(brandRepository.findById(anyInt())).thenReturn(brand);
-        if (colors != null)
-            when(colorRepository.findAllById(anyList())).thenReturn(colors);
-        if (sizes != null)
-            when(sizeRepository.findAllById(anyList())).thenReturn(sizes);
     }
 }
