@@ -2,7 +2,6 @@ package es.diplock.examples.service.product;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.*;
 
@@ -182,8 +181,8 @@ public class ProductServiceImplTest {
             assertAll(
                     () -> assertNotNull(actualProducts),
                     () -> assertEquals(2, actualProducts.getSize()),
-                    () -> assertEquals(1L, actualProducts.getContent().get(0).id()),
-                    () -> assertEquals(4L, actualProducts.getContent().get(1).id()));
+                    () -> assertEquals(1L, actualProducts.getContent().get(0).getId()),
+                    () -> assertEquals(4L, actualProducts.getContent().get(1).getId()));
 
             // Verify
             verify(productRepository).findAll(any(ProductSpecification.class), any(Pageable.class));
@@ -204,7 +203,7 @@ public class ProductServiceImplTest {
             // Then
             assertAll(
                     () -> assertNotNull(productDTO),
-                    () -> assertEquals(1L, productDTO.id()));
+                    () -> assertEquals(1L, productDTO.getId()));
             
             // Verify
             verify(productRepository, times(1)).findById(id);
@@ -220,7 +219,7 @@ public class ProductServiceImplTest {
                     .imageUrl("image.jpg")
                     .price(new BigDecimal("45.00"))
                     .stockQuantity(50)
-                    .gender("Male")
+                    .gender("male")
                     .sizesIds(Arrays.asList(2, 3))
                     .colorsIds(Arrays.asList(2))
                     .brandId(4)
@@ -251,12 +250,12 @@ public class ProductServiceImplTest {
             // Then
             assertAll(
                 () -> assertNotNull(actualDTO),
-                () -> assertEquals(4L, actualDTO.id()),
-                () -> assertEquals(GenderEnum.MALE.getDescription(), actualDTO.gender()),
-                () -> assertEquals(4, actualDTO.brandId()),
-                () -> assertEquals(2, actualDTO.subcategoryId()),
-                () -> assertTrue(actualDTO.colorsIds().containsAll(List.of(2))),
-                () -> assertTrue(actualDTO.sizesIds().containsAll(List.of(2, 3))));
+                () -> assertEquals(4L, actualDTO.getId()),
+                () -> assertEquals(GenderEnum.MALE.getDescription(), actualDTO.getGender()),
+                () -> assertEquals(4, actualDTO.getBrandId()),
+                () -> assertEquals(2, actualDTO.getSubcategoryId()),
+                () -> assertTrue(actualDTO.getColorsIds().containsAll(List.of(2))),
+                () -> assertTrue(actualDTO.getSizesIds().containsAll(List.of(2, 3))));
 
             // Verify
             verify(subcategoryRepository, times(1)).findById(2);
@@ -289,7 +288,7 @@ public class ProductServiceImplTest {
                     .imageUrl("updated-image.jpg")
                     .price(new BigDecimal("25.00"))
                     .stockQuantity(75)
-                    .gender("Male")
+                    .gender("male")
                     .sizesIds(List.of(1, 2))
                     .colorsIds(List.of(1, 3))
                     .brandId(1)
@@ -321,15 +320,14 @@ public class ProductServiceImplTest {
             // Then
             assertAll(
                     () -> assertNotNull(actual),
-                    () -> assertEquals(id, actual.id()),
-                    () -> assertEquals("Updated T-Shirt", actual.name()),
-                    () -> assertEquals(new BigDecimal("25.00"), actual.price()),
-                    () -> assertEquals(new BigDecimal("25.00"), actual.price()),
-                    () -> assertEquals(75, actual.stockQuantity()),
-                    () -> assertTrue(actual.sizesIds().containsAll(List.of(1, 2))),
-                    () -> assertTrue(actual.colorsIds().containsAll(List.of(1, 3))),
-                    () -> assertEquals(1, actual.brandId()),
-                    () -> assertEquals(1, actual.subcategoryId()));
+                    () -> assertEquals(id, actual.getId()),
+                    () -> assertEquals("Updated T-Shirt", actual.getName()),
+                    () -> assertEquals(new BigDecimal("25.00"), actual.getPrice()),
+                    () -> assertEquals(75, actual.getStockQuantity()),
+                    () -> assertTrue(actual.getSizesIds().containsAll(List.of(1, 2))),
+                    () -> assertTrue(actual.getColorsIds().containsAll(List.of(1, 3))),
+                    () -> assertEquals(1, actual.getBrandId()),
+                    () -> assertEquals(1, actual.getSubcategoryId()));
 
             // Verify
             verify(productRepository).findById(id);

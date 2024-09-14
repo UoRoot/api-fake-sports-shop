@@ -7,17 +7,17 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 public enum GenderEnum {
-    MALE("Male"), FEMALE("Female"), UNISEX("Unisex");
+    MALE("male"), FEMALE("female"), UNISEX("unisex");
 
     private String description;
 
     public static GenderEnum getEnum(String description) {
         switch (description) {
-            case "Male":
+            case "male":
                 return MALE;
-            case "Female":
+            case "female":
                 return FEMALE;
-            case "Unisex":
+            case "unisex":
                 return UNISEX;
             default:
                 return null;

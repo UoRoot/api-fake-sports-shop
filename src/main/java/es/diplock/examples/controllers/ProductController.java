@@ -13,6 +13,7 @@ import es.diplock.examples.exceptions.ResourceNotFoundException;
 import es.diplock.examples.service.product.ProductService;
 
 import static es.diplock.examples.utils.ConverterToResponses.*;
+
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
@@ -60,7 +61,7 @@ public class ProductController {
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/{id}")
-                .buildAndExpand(savedProduct.id())
+                .buildAndExpand(savedProduct.getId())
                 .toUri();
         return ResponseEntity.created(location).body(savedProduct);
     }
@@ -76,5 +77,5 @@ public class ProductController {
         productService.deleteProduct(id);
         return ResponseEntity.ok("Producto eliminado con exito");
     }
-
+    
 }
